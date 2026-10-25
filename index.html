@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -57,6 +58,29 @@
     summary::-webkit-details-marker { display: none; }
 
     section { scroll-margin-top: 6.5rem; }
+
+    #school-map { height: 22rem; background: #E7F3F0; }
+    .school-marker span {
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #00796B;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(27, 42, 39, 0.28);
+    }
+    .leaflet-tooltip.school-label {
+      border: 0;
+      border-radius: 999px;
+      background: #00796B;
+      color: #fff;
+      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.35rem 0.8rem;
+      box-shadow: 0 6px 16px rgba(0, 121, 107, 0.25);
+    }
+    .leaflet-tooltip.school-label::before { display: none; }
 
     #form-success {
       scroll-margin-top: 6.5rem;
@@ -162,10 +186,11 @@
       </a>
 
       <nav class="hidden items-center gap-1 lg:flex" aria-label="주요 메뉴">
-        <a class="rounded-full px-3.5 py-2 text-lg font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#about">교육원 소개</a>
-        <a class="rounded-full px-3.5 py-2 text-lg font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#curriculum">교육 과정</a>
-        <a class="rounded-full px-3.5 py-2 text-lg font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#process">등록 절차</a>
-        <a class="rounded-full px-3.5 py-2 text-lg font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#location">오시는 길</a>
+        <a class="rounded-full px-3 py-2 text-base font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#about">교육원 소개</a>
+        <a class="rounded-full px-3 py-2 text-base font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#notices">공지사항</a>
+        <a class="rounded-full px-3 py-2 text-base font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#curriculum">교육 과정</a>
+        <a class="rounded-full px-3 py-2 text-base font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#schedule">교육 일정</a>
+        <a class="rounded-full px-3 py-2 text-base font-medium text-[var(--ink)] hover:bg-[var(--brand-mist)]" href="#location">오시는 길</a>
       </nav>
 
       <div class="flex shrink-0 items-center gap-2">
@@ -188,7 +213,9 @@
           <div class="absolute left-0 right-0 top-full z-50 border-b border-[var(--line)] bg-white shadow-lg">
             <nav aria-label="모바일 메뉴" class="mx-auto flex max-w-6xl flex-col px-5 py-1 sm:px-6">
               <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#about">교육원 소개</a>
+              <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#notices">공지사항</a>
               <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#curriculum">교육 과정</a>
+              <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#schedule">교육 일정</a>
               <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#process">등록 절차</a>
               <a class="border-b border-[var(--line)] py-4 text-xl font-bold" href="#location">오시는 길</a>
               <a class="py-4 text-xl font-bold text-[var(--brand)]" href="tel:0332429908">수강 문의하기</a>
@@ -216,7 +243,7 @@
               </svg>
               수강 문의하기
             </a>
-            <a href="#curriculum" class="inline-flex min-h-14 items-center justify-center rounded-full border-2 border-[var(--brand)] bg-white px-7 text-lg font-bold text-[var(--brand)] transition-colors hover:bg-[var(--brand-mist)]">교육 과정 보기</a>
+            <a href="#curriculum" class="inline-flex min-h-14 items-center justify-center rounded-full border-2 border-[var(--brand)] bg-white px-7 text-lg font-bold text-[var(--brand)] transition-colors hover:bg-[var(--brand-mist)]">교육 과정 소개</a>
           </div>
 
           <p class="mt-5 text-lg text-[var(--muted)]">처음 준비하셔도 괜찮습니다. 반 선택과 내일배움카드부터 차근차근 안내합니다.</p>
@@ -225,7 +252,7 @@
             <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">주간반</a></li>
             <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">야간반</a></li>
             <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">자격면허 소지자반</a></li>
-            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#location">보수교육</a></li>
+            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#continuing-detail">보수교육</a></li>
           </ul>
         </div>
 
@@ -274,6 +301,18 @@
       </div>
     </section>
 
+    <section id="notices" class="border-y border-[var(--line)] bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
+        <div class="max-w-3xl">
+          <p class="text-base font-bold text-[var(--brand)]">공지사항</p>
+          <h2 class="mt-2 text-3xl font-bold leading-snug sm:text-4xl">교육원 소식을 확인하세요</h2>
+        </div>
+        <div id="notice-list" class="mt-8 space-y-4" aria-live="polite">
+          <p class="rounded-3xl border border-dashed border-[var(--line)] bg-[var(--cream)] px-6 py-8 text-lg text-[var(--muted)]">등록된 공지사항이 없습니다.</p>
+        </div>
+      </div>
+    </section>
+
     <section id="about" class="bg-white">
       <div class="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
         <div class="max-w-3xl">
@@ -310,7 +349,7 @@
           <p class="mt-5 text-lg leading-relaxed text-[var(--muted)]">이론, 실기, 현장 실습으로 국가시험과 실무를 준비합니다. 낮에 오시기 어려우시면 야간반이나 주말반을, 관련 자격이 있으시면 소지자반을 상담해 보세요. 보수교육은 토요일에 진행합니다. 내일배움카드는 반의 종류가 아니라, 해당되면 수강료 지원을 받을 수 있는 제도입니다.</p>
         </div>
 
-        <div class="mt-12 grid gap-5 lg:grid-cols-3">
+        <div class="mt-12 grid gap-5 sm:grid-cols-2">
           <article id="day" class="flex h-full flex-col rounded-3xl border border-[var(--line)] bg-white p-7 sm:p-8">
             <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-mist)] text-[var(--brand)]" aria-hidden="true">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -345,26 +384,67 @@
             <p class="mt-3 text-lg leading-relaxed text-[var(--muted)]">사회복지사, 간호조무사 등 관련 자격·면허를 보유하시면 교육시간이 달라질 수 있습니다. 해당 여부와 시간은 상담에서 정확히 안내합니다.</p>
             <p class="mt-6 rounded-2xl bg-[var(--soft)] px-4 py-3 text-base leading-relaxed"><span class="font-bold text-[var(--brand)]">이런 분께</span> 사회복지사, 간호조무사 등 자격 소지자</p>
           </article>
+
+          <a id="continuing" href="#continuing-detail" class="group flex h-full scroll-mt-28 flex-col rounded-3xl border border-[var(--line)] bg-white p-7 outline-none transition-colors hover:border-[var(--brand)] focus-visible:border-[var(--brand)] focus-visible:ring-4 focus-visible:ring-[var(--brand)]/25 sm:p-8">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-mist)] text-[var(--brand)]" aria-hidden="true">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" />
+                <path d="M3 21v-5h5" />
+                <path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" />
+                <path d="M21 3v5h-5" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-2xl font-bold">보수교육</h3>
+            <p class="mt-3 text-lg leading-relaxed text-[var(--muted)]">자격 취득 후 매 2년마다 받아야 하는 의무교육입니다. 토요일 09:00–18:00에 진행합니다.</p>
+            <p class="mt-6 rounded-2xl bg-[var(--soft)] px-4 py-3 text-base leading-relaxed"><span class="font-bold text-[var(--brand)]">이런 분께</span> 장기요양기관에서 근무 중인 요양보호사</p>
+            <span class="mt-auto inline-flex items-center gap-1 pt-6 text-base font-bold text-[var(--brand)] group-hover:underline">자세히 보기
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14" /><path d="m6 13 6 6 6-6" /></svg>
+            </span>
+          </a>
         </div>
 
-        <aside class="mt-8 rounded-[1.75rem] border-2 border-[var(--brand)] bg-white p-6 sm:p-8" aria-label="모집 및 개강 일정">
-          <p class="text-base font-bold text-[var(--brand)]">모집 및 개강 일정</p>
-          <h3 class="mt-2 text-2xl font-bold leading-snug sm:text-3xl">이번 기수 모집 여부를 전화로 안내합니다</h3>
-          <p class="mt-4 text-lg leading-relaxed text-[var(--muted)]">주간반, 야간반, 주말반, 자격면허 소지자반, 보수교육의 개강일은 기수마다 달라집니다. 자리와 일정을 확인하시려면 편하신 방법으로 문의해 주세요.</p>
-          <dl class="mt-6 grid gap-4 sm:grid-cols-3">
+        <section id="continuing-detail" class="mt-8 scroll-mt-28 rounded-[1.75rem] border-2 border-[var(--brand)] bg-white p-6 sm:p-8" aria-labelledby="continuing-title">
+          <p class="text-base font-bold text-[var(--brand)]">보수교육 안내</p>
+          <h3 id="continuing-title" class="mt-2 text-2xl font-bold leading-snug sm:text-3xl">2년마다 받는 의무교육입니다</h3>
+          <p class="mt-4 text-lg leading-relaxed text-[var(--muted)]">장기요양기관에 소속되어 근무하는 요양보호사는 매 2년마다 8시간 이상의 보수교육을 이수해야 합니다. 선한요양보호사교육원에서는 토요일 09:00–18:00에 진행합니다.</p>
+
+          <dl class="mt-6 grid gap-4 sm:grid-cols-2">
             <div class="rounded-2xl bg-[var(--sand)] px-4 py-4">
-              <dt class="text-base font-bold text-[var(--sand-ink)]">모집 반</dt>
-              <dd class="mt-1 text-lg font-bold">주간 · 야간 · 주말 · 소지자반 · 보수교육</dd>
+              <dt class="text-base font-bold text-[var(--sand-ink)]">주기</dt>
+              <dd class="mt-1 text-lg leading-relaxed">매 2년, 8시간 이상. 홀수년 출생자는 홀수년, 짝수년 출생자는 짝수년에 이수합니다.</dd>
             </div>
             <div class="rounded-2xl bg-[var(--brand-mist)] px-4 py-4">
-              <dt class="text-base font-bold text-[var(--brand)]">개강일</dt>
-              <dd class="mt-1 text-lg font-bold">상담 시 안내</dd>
+              <dt class="text-base font-bold text-[var(--brand)]">대상</dt>
+              <dd class="mt-1 text-lg leading-relaxed">장기요양기관에 소속되어 근무 중인 요양보호사</dd>
             </div>
             <div class="rounded-2xl bg-[var(--soft)] px-4 py-4">
-              <dt class="text-base font-bold text-[var(--ink)]">국비지원</dt>
-              <dd class="mt-1 text-lg font-bold">내일배움카드 확인</dd>
+              <dt class="text-base font-bold">면제</dt>
+              <dd class="mt-1 text-lg leading-relaxed">요양보호사 자격시험에 합격한 지 2년이 지나지 않은 분</dd>
+            </div>
+            <div class="rounded-2xl bg-[var(--cream)] px-4 py-4">
+              <dt class="text-base font-bold">수업</dt>
+              <dd class="mt-1 text-lg leading-relaxed">토요일 09:00 – 18:00</dd>
             </div>
           </dl>
+
+          <h4 class="mt-8 text-xl font-bold">교육 내용</h4>
+          <p class="mt-2 text-lg leading-relaxed text-[var(--muted)]">필수 영역 네 가지를 모두 이수합니다. 영역마다 2시간 이상입니다.</p>
+          <ol class="mt-4 grid gap-3 sm:grid-cols-2">
+            <li class="rounded-2xl border border-[var(--line)] px-4 py-4 text-lg leading-relaxed"><span class="font-bold text-[var(--brand)]">1.</span> 직업윤리와 기본 소양</li>
+            <li class="rounded-2xl border border-[var(--line)] px-4 py-4 text-lg leading-relaxed"><span class="font-bold text-[var(--brand)]">2.</span> 요양보호 기초지식</li>
+            <li class="rounded-2xl border border-[var(--line)] px-4 py-4 text-lg leading-relaxed"><span class="font-bold text-[var(--brand)]">3.</span> 기본 요양보호와 생활지원</li>
+            <li class="rounded-2xl border border-[var(--line)] px-4 py-4 text-lg leading-relaxed"><span class="font-bold text-[var(--brand)]">4.</span> 상황별 요양보호</li>
+          </ol>
+          <p class="mt-5 text-base leading-relaxed text-[var(--muted)]">기준은 노인장기요양보험법 시행령의 보수교육입니다. 본인 이수 연도는 상담에서 함께 확인합니다.</p>
+          <a href="tel:0332429908" class="mt-6 inline-flex min-h-14 w-full items-center justify-center rounded-full bg-[var(--brand)] px-7 text-lg font-bold text-white hover:bg-[var(--brand-hover)] sm:w-auto">보수교육 문의하기</a>
+        </section>
+
+        <aside id="schedule" class="mt-8 scroll-mt-28 rounded-[1.75rem] border-2 border-[var(--brand)] bg-white p-6 sm:p-8" aria-label="교육 일정 안내">
+          <p class="text-base font-bold text-[var(--brand)]">교육 일정 안내</p>
+          <h3 class="mt-2 text-2xl font-bold leading-snug sm:text-3xl">이번 교육 일정을 확인하세요</h3>
+          <div id="schedule-list" class="mt-6 space-y-4" aria-live="polite">
+            <p class="rounded-3xl border border-dashed border-[var(--line)] bg-[var(--cream)] px-6 py-8 text-lg text-[var(--muted)]">등록된 교육 일정이 없습니다. 전화로 문의해 주세요.</p>
+          </div>
           <a href="tel:0332429908" class="mt-6 inline-flex min-h-14 w-full items-center justify-center rounded-full bg-[var(--brand)] px-7 text-lg font-bold text-white hover:bg-[var(--brand-hover)] sm:w-auto">일정 문의하기</a>
         </aside>
       </div>
@@ -440,6 +520,11 @@
           <p class="mt-5 text-lg leading-relaxed text-[var(--muted)]">춘천시 영서로 2261, 4층에서 수업을 진행합니다. 오시는 길이 필요하시면 전화로 안내해 드립니다.</p>
         </div>
 
+        <div class="mt-8 overflow-hidden rounded-[1.75rem] border border-[var(--line)] bg-white">
+          <div id="school-map" role="region" aria-label="선한요양보호사교육원 위치 지도"></div>
+        </div>
+        <p class="mt-3 text-base leading-relaxed text-[var(--muted)]">선한요양보호사교육원 · 춘천시 영서로 2261, 4층 · <a class="font-bold text-[var(--brand)] underline-offset-4 hover:underline" href="https://map.naver.com/p/search/%EC%84%A0%ED%95%9C%EC%9A%94%EC%96%91%EB%B3%B4%ED%98%B8%EC%82%AC%EA%B5%90%EC%9C%A1%EC%9B%90%20%EA%B0%95%EC%9B%90%ED%8A%B9%EB%B3%84%EC%9E%90%EC%B9%98%EB%8F%84%20%EC%B6%98%EC%B2%9C%EC%8B%9C%20%EC%98%81%EC%84%9C%EB%A1%9C%202261" target="_blank" rel="noopener noreferrer">네이버 지도에서 크게 보기<span class="sr-only"> (새 창)</span></a></p>
+
         <div class="mt-12 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <h3 class="text-2xl font-bold">교육원 안내</h3>
@@ -453,7 +538,6 @@
               <p class="text-base font-bold text-[var(--muted)]">주소</p>
               <p class="mt-1 text-xl font-bold leading-relaxed">강원특별자치도 춘천시 영서로 2261</p>
               <p class="text-lg text-[var(--muted)]">4층</p>
-              <a class="mt-4 inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[var(--brand)] bg-white px-5 text-base font-bold text-[var(--brand)] hover:bg-[var(--brand-mist)]" href="https://map.naver.com/p/search/%EA%B0%95%EC%9B%90%ED%8A%B9%EB%B3%84%EC%9E%90%EC%B9%98%EB%8F%84%20%EC%B6%98%EC%B2%9C%EC%8B%9C%20%EC%98%81%EC%84%9C%EB%A1%9C%202261" target="_blank" rel="noopener noreferrer">네이버 지도에서 위치 보기<span class="sr-only"> (새 창)</span></a>
             </div>
 
             <div class="mt-8">
@@ -570,9 +654,12 @@
         <p class="text-base font-bold text-[#B7D9D3]">바로가기</p>
         <nav aria-label="하단 메뉴" class="mt-3 flex flex-col items-start gap-2 text-lg">
           <a class="underline-offset-4 hover:underline" href="#about">교육원 소개</a>
+          <a class="underline-offset-4 hover:underline" href="#notices">공지사항</a>
           <a class="underline-offset-4 hover:underline" href="#curriculum">교육 과정</a>
+          <a class="underline-offset-4 hover:underline" href="#schedule">교육 일정</a>
           <a class="underline-offset-4 hover:underline" href="#process">등록 절차</a>
           <a class="underline-offset-4 hover:underline" href="#location">오시는 길</a>
+          <a class="underline-offset-4 hover:underline" href="admin.html">관리자</a>
           <a class="underline-offset-4 hover:underline" href="#top">맨 위로</a>
         </nav>
       </div>
@@ -591,8 +678,24 @@
     </a>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     (function () {
+      var school = [37.8639135, 127.7228814];
+      var map = L.map("school-map", { scrollWheelZoom: false }).setView(school, 16);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+      }).addTo(map);
+      var icon = L.divIcon({
+        className: "school-marker",
+        html: "<span></span>",
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        tooltipAnchor: [0, -12]
+      });
+      L.marker(school, { icon: icon, title: "선한요양보호사교육원", keyboard: true }).addTo(map)
+        .bindTooltip("선한요양보호사교육원", { permanent: true, direction: "top", className: "school-label", offset: [0, -6] });
       var header = document.querySelector("header");
       var onScroll = function () {
         header.classList.toggle("is-scrolled", window.scrollY > 4);
@@ -648,6 +751,81 @@
         window.scrollTo({ top: Math.max(0, nextTop), behavior: reduceMotion ? "auto" : "smooth" });
         success.focus({ preventScroll: true });
       });
+
+      function emptyBox(message) {
+        var p = document.createElement("p");
+        p.className = "rounded-3xl border border-dashed border-[var(--line)] bg-[var(--cream)] px-6 py-8 text-lg text-[var(--muted)]";
+        p.textContent = message;
+        return p;
+      }
+
+      function renderBoard(data) {
+        var notices = document.getElementById("notice-list");
+        var schedules = document.getElementById("schedule-list");
+        notices.replaceChildren();
+        schedules.replaceChildren();
+        var noticeItems = (data && data.notices) || [];
+        var scheduleItems = (data && data.schedules) || [];
+        if (!noticeItems.length) {
+          notices.appendChild(emptyBox("등록된 공지사항이 없습니다."));
+        } else {
+          noticeItems.forEach(function (item) {
+            var article = document.createElement("article");
+            article.className = "rounded-3xl border border-[var(--line)] bg-[var(--cream)] px-6 py-6";
+            var date = document.createElement("p");
+            date.className = "text-base font-bold text-[var(--brand)]";
+            date.textContent = item.date || "공지";
+            var title = document.createElement("h3");
+            title.className = "mt-1 text-2xl font-bold";
+            title.textContent = item.title;
+            article.appendChild(date);
+            article.appendChild(title);
+            if (item.body) {
+              var body = document.createElement("p");
+              body.className = "mt-3 whitespace-pre-wrap text-lg leading-relaxed text-[var(--muted)]";
+              body.textContent = item.body;
+              article.appendChild(body);
+            }
+            notices.appendChild(article);
+          });
+        }
+        if (!scheduleItems.length) {
+          schedules.appendChild(emptyBox("등록된 교육 일정이 없습니다. 전화로 문의해 주세요."));
+        } else {
+          scheduleItems.forEach(function (item) {
+            var article = document.createElement("article");
+            article.className = "rounded-3xl bg-[var(--sand)] px-6 py-6";
+            var title = document.createElement("h3");
+            title.className = "text-2xl font-bold";
+            title.textContent = item.title;
+            article.appendChild(title);
+            if (item.when) {
+              var when = document.createElement("p");
+              when.className = "mt-2 text-lg font-bold text-[var(--sand-ink)]";
+              when.textContent = item.when;
+              article.appendChild(when);
+            }
+            if (item.body) {
+              var body = document.createElement("p");
+              body.className = "mt-3 whitespace-pre-wrap text-lg leading-relaxed";
+              body.textContent = item.body;
+              article.appendChild(body);
+            }
+            schedules.appendChild(article);
+          });
+        }
+      }
+
+      fetch("/api/content", { cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) throw new Error("api");
+          return response.json();
+        })
+        .catch(function () {
+          return fetch("data/content.json", { cache: "no-store" }).then(function (response) { return response.json(); });
+        })
+        .then(renderBoard)
+        .catch(function () { renderBoard({ notices: [], schedules: [] }); });
 
       document.getElementById("rewrite").addEventListener("click", function () {
         form.reset();

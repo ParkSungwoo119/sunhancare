@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>관리자 | 선한요양보호사교육원</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300796B'/%3E%3C/svg%3E" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --brand: #00796B;
+      --brand-hover: #006056;
+      --ink: #1B2A27;
+      --muted: #3E524E;
+      --line: #E3DED2;
+      --cream: #FAF9F6;
+    }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+    input, textarea, button { font-family: inherit; font-size: 1.05rem; }
+  </style>
+</head>
+<body class="antialiased">
+  <header class="border-b border-[var(--line)] bg-white">
+    <div class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
+      <div>
+        <p class="text-sm font-bold text-[var(--brand)]">선한요양보호사교육원</p>
+        <h1 class="text-2xl font-bold">관리자</h1>
+      </div>
+      <a class="text-base font-bold text-[var(--brand)] underline-offset-4 hover:underline" href="index.html">홈으로</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-5 py-8 sm:px-6">
+    <form id="login-form" class="rounded-3xl border border-[var(--line)] bg-white p-6">
+      <label class="mb-2 block font-bold" for="password">관리 비밀번호</label>
+      <input id="password" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" type="password" autocomplete="current-password" required />
+      <button class="mt-4 inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand)] px-6 font-bold text-white hover:bg-[var(--brand-hover)]" type="submit">들어가기</button>
+      <p id="login-error" class="mt-3 hidden text-base font-bold text-red-700" role="alert"></p>
+    </form>
+
+    <div id="editor" class="hidden space-y-8">
+      <p class="text-base text-[var(--muted)]">여기에 저장하면 홈페이지의 공지사항과 교육 일정 안내에 바로 나타납니다.</p>
+
+      <section class="rounded-3xl border border-[var(--line)] bg-white p-6">
+        <h2 class="text-2xl font-bold">공지사항</h2>
+        <form id="notice-form" class="mt-4 space-y-4">
+          <div>
+            <label class="mb-2 block font-bold" for="notice-title">제목</label>
+            <input id="notice-title" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" maxlength="80" required />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="notice-date">날짜</label>
+            <input id="notice-date" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" type="date" required />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="notice-body">내용</label>
+            <textarea id="notice-body" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" rows="4" maxlength="1000" required></textarea>
+          </div>
+          <button class="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand)] px-6 font-bold text-white hover:bg-[var(--brand-hover)]" type="submit">공지 올리기</button>
+        </form>
+        <ul id="notice-items" class="mt-6 space-y-3"></ul>
+      </section>
+
+      <section class="rounded-3xl border border-[var(--line)] bg-white p-6">
+        <h2 class="text-2xl font-bold">교육 일정 안내</h2>
+        <form id="schedule-form" class="mt-4 space-y-4">
+          <div>
+            <label class="mb-2 block font-bold" for="schedule-title">제목</label>
+            <input id="schedule-title" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" maxlength="80" required placeholder="예: 11월 주간반" />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="schedule-when">일정</label>
+            <input id="schedule-when" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" maxlength="80" required placeholder="예: 2026년 11월 3일 개강" />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="schedule-date">표시 날짜</label>
+            <input id="schedule-date" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" type="date" required />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="schedule-body">안내</label>
+            <textarea id="schedule-body" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" rows="4" maxlength="1000" placeholder="모집 인원, 수업 시간 등"></textarea>
+          </div>
+          <button class="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand)] px-6 font-bold text-white hover:bg-[var(--brand-hover)]" type="submit">일정 올리기</button>
+        </form>
+        <ul id="schedule-items" class="mt-6 space-y-3"></ul>
+      </section>
+
+      <p id="save-error" class="hidden text-base font-bold text-red-700" role="alert"></p>
+      <button id="logout" class="text-base font-bold text-[var(--muted)] underline-offset-4 hover:underline" type="button">나가기</button>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var password = sessionStorage.getItem("sunhan-admin") || "";
+      var content = { notices: [], schedules: [] };
+      var loginForm = document.getElementById("login-form");
+      var editor = document.getElementById("editor");
+      var loginError = document.getElementById("login-error");
+      var saveError = document.getElementById("save-error");
+
+      function showError(node, message) {
+        node.textContent = message || "";
+        node.classList.toggle("hidden", !message);
+      }
+
+      function itemRow(item, extra, action) {
+        var li = document.createElement("li");
+        li.className = "rounded-2xl bg-[var(--cream)] px-4 py-4";
+        var title = document.createElement("p");
+        title.className = "font-bold";
+        title.textContent = item.title;
+        li.appendChild(title);
+        if (extra) {
+          var meta = document.createElement("p");
+          meta.className = "mt-1 text-[var(--brand)] font-bold";
+          meta.textContent = extra;
+          li.appendChild(meta);
+        }
+        if (item.body) {
+          var body = document.createElement("p");
+          body.className = "mt-1 whitespace-pre-wrap text-[var(--muted)]";
+          body.textContent = item.body;
+          li.appendChild(body);
+        }
+        var button = document.createElement("button");
+        button.className = "mt-3 font-bold text-red-700 underline-offset-4 hover:underline";
+        button.type = "button";
+        button.textContent = "삭제";
+        button.addEventListener("click", function () { save(action, { id: item.id }); });
+        li.appendChild(button);
+        return li;
+      }
+
+      function render() {
+        var notices = document.getElementById("notice-items");
+        var schedules = document.getElementById("schedule-items");
+        notices.replaceChildren();
+        schedules.replaceChildren();
+        if (!content.notices.length) {
+          var emptyNotice = document.createElement("li");
+          emptyNotice.className = "text-[var(--muted)]";
+          emptyNotice.textContent = "등록된 공지가 없습니다.";
+          notices.appendChild(emptyNotice);
+        } else {
+          content.notices.forEach(function (item) {
+            notices.appendChild(itemRow(item, item.date, "delete-notice"));
+          });
+        }
+        if (!content.schedules.length) {
+          var emptySchedule = document.createElement("li");
+          emptySchedule.className = "text-[var(--muted)]";
+          emptySchedule.textContent = "등록된 일정이 없습니다.";
+          schedules.appendChild(emptySchedule);
+        } else {
+          content.schedules.forEach(function (item) {
+            schedules.appendChild(itemRow(item, item.when || item.date, "delete-schedule"));
+          });
+        }
+      }
+
+      function openEditor() {
+        loginForm.classList.add("hidden");
+        editor.classList.remove("hidden");
+        render();
+      }
+
+      async function save(action, fields) {
+        showError(saveError, "");
+        var response = await fetch("/api/content", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.assign({ password: password, action: action }, fields))
+        });
+        var data = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          if (response.status === 401) {
+            sessionStorage.removeItem("sunhan-admin");
+            password = "";
+            editor.classList.add("hidden");
+            loginForm.classList.remove("hidden");
+            showError(loginError, data.error || "비밀번호가 맞지 않습니다.");
+            return;
+          }
+          showError(saveError, data.error || "저장하지 못했습니다.");
+          return;
+        }
+        content = data;
+        render();
+      }
+
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        password = document.getElementById("password").value;
+        showError(loginError, "");
+        var response = await fetch("/api/content", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: password, action: "login" })
+        });
+        var data = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          showError(loginError, data.error || "들어갈 수 없습니다.");
+          return;
+        }
+        sessionStorage.setItem("sunhan-admin", password);
+        content = data;
+        openEditor();
+      });
+
+      document.getElementById("notice-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        save("add-notice", {
+          title: document.getElementById("notice-title").value,
+          date: document.getElementById("notice-date").value,
+          body: document.getElementById("notice-body").value
+        }).then(function () { event.target.reset(); });
+      });
+
+      document.getElementById("schedule-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        save("add-schedule", {
+          title: document.getElementById("schedule-title").value,
+          when: document.getElementById("schedule-when").value,
+          date: document.getElementById("schedule-date").value,
+          body: document.getElementById("schedule-body").value
+        }).then(function () { event.target.reset(); });
+      });
+
+      document.getElementById("logout").addEventListener("click", function () {
+        sessionStorage.removeItem("sunhan-admin");
+        password = "";
+        editor.classList.add("hidden");
+        loginForm.classList.remove("hidden");
+      });
+
+      if (password) {
+        fetch("/api/content", { cache: "no-store" })
+          .then(function (response) { return response.json(); })
+          .then(function (data) {
+            content = data;
+            openEditor();
+          })
+          .catch(function () {
+            password = "";
+            sessionStorage.removeItem("sunhan-admin");
+          });
+      }
+    })();
+  </script>
+</body>
+</html>
