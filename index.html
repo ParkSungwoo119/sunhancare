@@ -122,6 +122,17 @@
       padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 
+    .card-fab {
+      right: 1rem;
+      bottom: 1.25rem;
+    }
+
+    @media (max-width: 1023px) {
+      .card-fab {
+        bottom: calc(6.25rem + env(safe-area-inset-bottom));
+      }
+    }
+
     @media (max-width: 1023px) {
       body {
         padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
@@ -677,7 +688,6 @@
           <a class="underline-offset-4 hover:underline" href="#schedule">교육 일정</a>
           <a class="underline-offset-4 hover:underline" href="#process">등록 절차</a>
           <a class="underline-offset-4 hover:underline" href="#location">오시는 길</a>
-          <a class="underline-offset-4 hover:underline" href="card.html">전자명함</a>
           <a class="underline-offset-4 hover:underline" href="admin.html">관리자</a>
           <a class="underline-offset-4 hover:underline" href="#top">맨 위로</a>
         </nav>
@@ -688,6 +698,49 @@
     </div>
   </footer>
 
+  <button id="open-card" class="card-fab no-print fixed z-40 inline-flex min-h-14 items-center gap-2 rounded-full bg-[var(--brand-deep)] px-5 text-base font-bold text-white shadow-[0_10px_28px_rgba(0,77,64,0.35)] hover:bg-[var(--brand)]" type="button">
+    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 8h18" />
+    </svg>
+    명함 보내기
+  </button>
+
+  <div id="card-popup" class="no-print fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true" aria-labelledby="card-popup-title" hidden>
+    <button class="absolute inset-0 bg-[#1B2A27]/55" type="button" data-close-card aria-label="명함 닫기"></button>
+    <div class="relative z-10 mx-auto flex h-full max-w-lg items-end px-3 py-3 sm:items-center sm:px-4 sm:py-8">
+      <article class="max-h-full w-full overflow-y-auto rounded-[1.75rem] bg-white shadow-[0_24px_60px_rgba(27,42,39,0.28)]">
+        <div class="sticky top-0 z-10 flex justify-end bg-gradient-to-b from-white via-white to-transparent p-3">
+          <button class="inline-flex min-h-11 items-center rounded-full bg-white px-4 text-base font-bold text-[var(--ink)] shadow ring-1 ring-[var(--line)]" type="button" data-close-card>닫기</button>
+        </div>
+        <img src="/image/1.png" alt="선한요양보호사교육원 실습 수업" class="-mt-14 h-48 w-full object-cover sm:h-56" />
+        <div class="px-5 pb-6 pt-5 sm:px-7">
+          <p class="text-base font-bold text-[var(--brand)]">춘천 요양보호사 교육원</p>
+          <h2 id="card-popup-title" class="mt-1 text-2xl font-bold leading-snug">선한요양보호사교육원</h2>
+          <p class="mt-2 text-lg leading-relaxed text-[var(--muted)]">높은 합격률! 자격증 취득부터 취업 연계까지 한번에</p>
+          <dl class="mt-5 space-y-2 text-lg">
+            <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">대표</dt><dd>한운경</dd></div>
+            <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">상담실장</dt><dd>이희권</dd></div>
+            <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">사무장</dt><dd>박진권</dd></div>
+            <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">전화</dt><dd>033-242-9908</dd></div>
+            <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">주소</dt><dd>강원특별자치도 춘천시 영서로 2261, 4층</dd></div>
+          </dl>
+
+          <label class="mt-6 block text-base font-bold" for="card-message">문자 내용</label>
+          <textarea id="card-message" class="mt-2 w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3 text-lg leading-relaxed text-[var(--ink)]" rows="4"></textarea>
+          <p class="mt-2 text-base leading-relaxed text-[var(--muted)]">내용을 고친 뒤 문자를 보내면, 휴대폰 문자 앱에서 저장된 연락처를 골라 보낼 수 있습니다.</p>
+
+          <div class="mt-5 grid gap-3">
+            <button id="kakao-share" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#FEE500] px-4 text-base font-bold text-[#191919]" type="button">카카오톡 공유</button>
+            <button id="sms-share" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-4 text-base font-bold text-white" type="button">문자 보내기</button>
+            <button id="contact-share" class="hidden min-h-14 items-center justify-center gap-2 rounded-full border-2 border-[var(--brand)] bg-white px-4 text-base font-bold text-[var(--brand)]" type="button">연락처에서 골라 문자</button>
+            <a class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border-2 border-[var(--brand)] bg-white px-4 text-base font-bold text-[var(--brand)]" href="tel:0332429908">033-242-9908 전화하기</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
   <div class="mobile-callbar no-print fixed inset-x-0 bottom-0 z-50 px-4 pt-2 lg:hidden">
     <a href="tel:0332429908" class="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] text-lg font-bold text-white shadow-[0_10px_28px_rgba(0,121,107,0.35)] hover:bg-[var(--brand-hover)]">
       <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -697,6 +750,7 @@
     </a>
   </div>
 
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     (function () {
@@ -845,6 +899,87 @@
         })
         .then(renderBoard)
         .catch(function () { renderBoard({ notices: [], schedules: [] }); });
+
+      var popup = document.getElementById("card-popup");
+      var openCard = document.getElementById("open-card");
+      var cardMessage = document.getElementById("card-message");
+      var shareUrl = "https://sunhancare.vercel.app/";
+      cardMessage.value = "선한요양보호사교육원 전자명함입니다.\n상담 전화 033-242-9908\n" + shareUrl;
+
+      function openPopup() {
+        popup.classList.remove("hidden");
+        popup.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePopup() {
+        popup.classList.add("hidden");
+        popup.hidden = true;
+        document.body.style.overflow = "";
+        openCard.focus();
+      }
+
+      openCard.addEventListener("click", openPopup);
+      popup.querySelectorAll("[data-close-card]").forEach(function (button) {
+        button.addEventListener("click", closePopup);
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !popup.hidden) closePopup();
+      });
+
+      var kakaoJavaScriptKey = "880435f162b00880a80c025d267ab968";
+      if (window.Kakao && !Kakao.isInitialized()) Kakao.init(kakaoJavaScriptKey);
+
+      document.getElementById("kakao-share").addEventListener("click", function () {
+        if (!window.Kakao || !Kakao.isInitialized()) {
+          window.alert("카카오톡 공유를 준비하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+          return;
+        }
+        try {
+          Kakao.Share.sendDefault({
+            objectType: "feed",
+            content: {
+              title: "선한요양보호사교육원 전자명함",
+              description: "요양보호사 자격증 취득 및 교육 문의",
+              imageUrl: "https://sunhancare.vercel.app/image/1.png",
+              link: { mobileWebUrl: shareUrl, webUrl: shareUrl }
+            }
+          });
+        } catch (error) {
+          window.alert("카카오톡 공유를 열지 못했습니다. 카카오에 등록된 사이트 도메인을 확인해 주세요.");
+        }
+      });
+
+      function smsAddress(numbers) {
+        var body = encodeURIComponent(cardMessage.value);
+        var isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (numbers && numbers.length) {
+          var list = numbers.join(",");
+          return isiOS ? "sms:" + list + "&body=" + body : "sms:" + list + "?body=" + body;
+        }
+        return "sms:?body=" + body;
+      }
+
+      document.getElementById("sms-share").addEventListener("click", function () {
+        window.location.href = smsAddress();
+      });
+
+      var contactShare = document.getElementById("contact-share");
+      if (navigator.contacts && navigator.contacts.select) {
+        contactShare.classList.remove("hidden");
+        contactShare.classList.add("inline-flex");
+        contactShare.addEventListener("click", function () {
+          navigator.contacts.select(["name", "tel"], { multiple: true }).then(function (people) {
+            var numbers = [];
+            (people || []).forEach(function (person) {
+              (person.tel || []).forEach(function (tel) {
+                if (tel) numbers.push(String(tel));
+              });
+            });
+            if (numbers.length) window.location.href = smsAddress(numbers);
+          }).catch(function () {});
+        });
+      }
 
       document.getElementById("rewrite").addEventListener("click", function () {
         form.reset();
