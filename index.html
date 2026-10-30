@@ -618,7 +618,7 @@
             <h3 class="text-2xl font-bold">수강 신청 문의</h3>
 
             <form id="consult-form" class="mt-4 space-y-5" method="post" action="#location" onsubmit="return false">
-              <p class="text-lg leading-relaxed text-[var(--muted)]">희망 반을 적어 두시면 전화 상담이 더 수월합니다. 적으신 내용은 이 화면에만 남고, 서버로 전송되지 않습니다.</p>
+              <p class="text-lg leading-relaxed text-[var(--muted)]">희망 반을 적어 등록해 주세요. 문의 내용은 교육원 카카오톡으로 전달되고, 확인 후 연락드립니다.</p>
               <div class="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label class="mb-2 block text-base font-bold" for="name">성함 <span class="text-[var(--brand)]">(필수)</span></label>
@@ -653,12 +653,13 @@
                 <span>수강 상담을 위해 이름과 전화번호 확인에 동의합니다. <span class="font-bold text-[var(--brand)]">(필수)</span></span>
               </label>
 
-              <button class="inline-flex min-h-14 w-full items-center justify-center rounded-full bg-[var(--brand)] px-7 text-lg font-bold text-white transition-colors hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]" type="submit">수강 문의 정리하기</button>
+              <p id="form-error" class="hidden text-base font-bold leading-relaxed text-red-700" role="alert"></p>
+              <button class="inline-flex min-h-14 w-full items-center justify-center rounded-full bg-[var(--brand)] px-7 text-lg font-bold text-white transition-colors hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)] disabled:opacity-60" type="submit">수강 문의 등록하기</button>
             </form>
 
             <div id="form-success" class="hidden" tabindex="-1" role="status">
-              <p class="text-2xl font-bold leading-snug">정리해 주셔서 감사합니다</p>
-              <p class="mt-3 text-lg leading-relaxed text-[var(--muted)]"><span id="sum-name" class="font-bold text-[var(--ink)]"></span> 님, 아래 내용을 보면서 수강 문의를 이어서 주세요. 이 내용은 서버로 전송되지 않았습니다.</p>
+              <p class="text-2xl font-bold leading-snug">문의를 전달했습니다</p>
+              <p class="mt-3 text-lg leading-relaxed text-[var(--muted)]"><span id="sum-name" class="font-bold text-[var(--ink)]"></span> 님, 등록해 주신 내용을 교육원 카카오톡으로 전달했습니다. 확인 후 연락드리겠습니다.</p>
               <dl class="mt-6 space-y-4 text-lg">
                 <div>
                   <dt class="text-base font-bold text-[var(--muted)]">연락처</dt>
@@ -818,6 +819,14 @@
         });
       });
 
+      var formError = document.getElementById("form-error");
+      var submitButton = form.querySelector("button[type=submit]");
+
+      function showFormError(message) {
+        formError.textContent = message || "";
+        formError.classList.toggle("hidden", !message);
+      }
+
       form.addEventListener("submit", function (event) {
         event.preventDefault();
         var name = form.elements.name;
@@ -827,24 +836,52 @@
         name.setCustomValidity(name.value.trim() ? "" : "성함을 입력해 주세요.");
         phone.setCustomValidity(phone.value.trim() ? "" : "연락처를 입력해 주세요.");
         message.setCustomValidity(message.value.trim() ? "" : "문의 내용을 입력해 주세요.");
+        showFormError("");
 
         if (!form.checkValidity()) {
           form.reportValidity();
           return;
         }
 
-        document.getElementById("sum-name").textContent = name.value.trim();
-        document.getElementById("sum-phone").textContent = phone.value.trim();
-        document.getElementById("sum-course").textContent = form.elements.course.value;
-        document.getElementById("sum-message").textContent = message.value.trim();
-
-        form.classList.add("hidden");
-        success.classList.remove("hidden");
-        var headerHeight = header.offsetHeight;
-        var nextTop = success.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        window.scrollTo({ top: Math.max(0, nextTop), behavior: reduceMotion ? "auto" : "smooth" });
-        success.focus({ preventScroll: true });
+        submitButton.disabled = true;
+        submitButton.textContent = "등록 중";
+        fetch("/api/inquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.value.trim(),
+            phone: phone.value.trim(),
+            course: form.elements.course.value,
+            message: message.value.trim(),
+            consent: document.getElementById("consent").checked
+          })
+        })
+          .then(function (response) {
+            return response.json().catch(function () { return {}; }).then(function (data) {
+              return { ok: response.ok, data: data };
+            });
+          })
+          .then(function (result) {
+            if (!result.ok) throw new Error(result.data.error || "카카오톡으로 전달하지 못했습니다. 033-242-9908로 전화해 주세요.");
+            document.getElementById("sum-name").textContent = name.value.trim();
+            document.getElementById("sum-phone").textContent = phone.value.trim();
+            document.getElementById("sum-course").textContent = form.elements.course.value;
+            document.getElementById("sum-message").textContent = message.value.trim();
+            form.classList.add("hidden");
+            success.classList.remove("hidden");
+            var headerHeight = header.offsetHeight;
+            var nextTop = success.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            window.scrollTo({ top: Math.max(0, nextTop), behavior: reduceMotion ? "auto" : "smooth" });
+            success.focus({ preventScroll: true });
+          })
+          .catch(function (error) {
+            showFormError(error.message || "카카오톡으로 전달하지 못했습니다. 033-242-9908로 전화해 주세요.");
+          })
+          .then(function () {
+            submitButton.disabled = false;
+            submitButton.textContent = "수강 문의 등록하기";
+          });
       });
 
       function emptyBox(message) {

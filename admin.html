@@ -95,6 +95,25 @@
         <ul id="schedule-items" class="mt-6 space-y-3"></ul>
       </section>
 
+      <section class="rounded-3xl border border-[var(--line)] bg-white p-6">
+        <h2 class="text-2xl font-bold">카카오톡 문의 받기</h2>
+        <p id="kakao-status" class="mt-3 text-[var(--muted)]">확인 중입니다.</p>
+        <p class="mt-3 text-base leading-relaxed text-[var(--muted)]">고객이 수강 문의를 등록하면, 아래에 연결한 카카오톡의 나와의 채팅으로 내용이 도착합니다. 카카오 개발자 앱에서 카카오 로그인을 켜고, 동의항목의 카카오톡 메시지 전송을 켠 다음, 리다이렉트 URI에 이 주소를 등록해 주세요.</p>
+        <p class="mt-2 break-all font-bold">https://sunhancare.vercel.app/api/kakao</p>
+        <form id="kakao-form" class="mt-4 space-y-4">
+          <div>
+            <label class="mb-2 block font-bold" for="kakao-rest-key">REST API 키</label>
+            <input id="kakao-rest-key" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" autocomplete="off" placeholder="자바스크립트 키가 아닌 REST API 키" />
+          </div>
+          <div>
+            <label class="mb-2 block font-bold" for="kakao-client-secret">클라이언트 시크릿</label>
+            <input id="kakao-client-secret" class="w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3" type="password" autocomplete="off" placeholder="카카오에서 시크릿을 켰을 때만 입력" />
+          </div>
+          <button class="inline-flex min-h-12 items-center justify-center rounded-full bg-[#FEE500] px-6 font-bold text-[#191919]" type="submit">카카오톡 연결하기</button>
+        </form>
+        <p id="kakao-error" class="mt-3 hidden text-base font-bold text-red-700" role="alert"></p>
+      </section>
+
       <p id="save-error" class="hidden text-base font-bold text-red-700" role="alert"></p>
       <button id="logout" class="text-base font-bold text-[var(--muted)] underline-offset-4 hover:underline" type="button">나가기</button>
     </div>
@@ -173,6 +192,25 @@
         loginForm.classList.add("hidden");
         editor.classList.remove("hidden");
         render();
+        loadKakao();
+      }
+
+      function loadKakao() {
+        var status = document.getElementById("kakao-status");
+        fetch("/api/kakao", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: password, action: "status" })
+        })
+          .then(function (response) { return response.json(); })
+          .then(function (data) {
+            if (data.linked) status.textContent = "연결되어 있습니다. 수강 문의가 이 카카오톡으로 전달됩니다.";
+            else if (data.appReady) status.textContent = "REST API 키는 저장되었습니다. 카카오톡 연결하기를 눌러 받을 계정을 로그인해 주세요.";
+            else status.textContent = "아직 연결되지 않았습니다. REST API 키를 저장하고 카카오톡에 로그인해 주세요.";
+          })
+          .catch(function () {
+            status.textContent = "연결 상태를 확인하지 못했습니다.";
+          });
       }
 
       async function save(action, fields) {
@@ -235,6 +273,42 @@
           date: document.getElementById("schedule-date").value,
           body: document.getElementById("schedule-body").value
         }).then(function () { event.target.reset(); });
+      });
+
+      document.getElementById("kakao-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        var kakaoError = document.getElementById("kakao-error");
+        showError(kakaoError, "");
+        var restApiKey = document.getElementById("kakao-rest-key").value.trim();
+        var clientSecret = document.getElementById("kakao-client-secret").value.trim();
+        if (restApiKey) {
+          var saveResponse = await fetch("/api/kakao", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              password: password,
+              action: "save-app",
+              restApiKey: restApiKey,
+              clientSecret: clientSecret
+            })
+          });
+          var saveData = await saveResponse.json().catch(function () { return {}; });
+          if (!saveResponse.ok) {
+            showError(kakaoError, saveData.error || "키를 저장하지 못했습니다.");
+            return;
+          }
+        }
+        var startResponse = await fetch("/api/kakao", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: password, action: "start" })
+        });
+        var startData = await startResponse.json().catch(function () { return {}; });
+        if (!startResponse.ok || !startData.url) {
+          showError(kakaoError, startData.error || "카카오톡 연결을 시작하지 못했습니다.");
+          return;
+        }
+        window.location.href = startData.url;
       });
 
       document.getElementById("logout").addEventListener("click", function () {
