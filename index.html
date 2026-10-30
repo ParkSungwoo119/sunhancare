@@ -726,14 +726,13 @@
             <div class="flex gap-3"><dt class="w-20 shrink-0 font-bold text-[var(--muted)]">주소</dt><dd>강원특별자치도 춘천시 영서로 2261, 4층</dd></div>
           </dl>
 
-          <label class="mt-6 block text-base font-bold" for="card-message">문자 내용</label>
-          <textarea id="card-message" class="mt-2 w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3 text-lg leading-relaxed text-[var(--ink)]" rows="4"></textarea>
-          <p class="mt-2 text-base leading-relaxed text-[var(--muted)]">내용을 고친 뒤 문자를 보내면, 휴대폰 문자 앱에서 저장된 연락처를 골라 보낼 수 있습니다.</p>
+          <label class="mt-6 block text-base font-bold" for="card-phone">받는 번호</label>
+          <input id="card-phone" class="mt-2 w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3 text-lg text-[var(--ink)]" type="tel" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000" />
+          <p class="mt-2 text-base leading-relaxed text-[var(--muted)]">저장되지 않은 번호도 적으면 됩니다. 문자 앱이 열리고, 명함을 누르면 홈페이지로 이동합니다.</p>
 
           <div class="mt-5 grid gap-3">
             <button id="kakao-share" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#FEE500] px-4 text-base font-bold text-[#191919]" type="button">카카오톡 공유</button>
             <button id="sms-share" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-4 text-base font-bold text-white" type="button">문자 보내기</button>
-            <button id="contact-share" class="hidden min-h-14 items-center justify-center gap-2 rounded-full border-2 border-[var(--brand)] bg-white px-4 text-base font-bold text-[var(--brand)]" type="button">연락처에서 골라 문자</button>
             <a class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border-2 border-[var(--brand)] bg-white px-4 text-base font-bold text-[var(--brand)]" href="tel:0332429908">033-242-9908 전화하기</a>
           </div>
         </div>
@@ -902,9 +901,9 @@
 
       var popup = document.getElementById("card-popup");
       var openCard = document.getElementById("open-card");
-      var cardMessage = document.getElementById("card-message");
+      var cardPhone = document.getElementById("card-phone");
       var shareUrl = "https://sunhancare.vercel.app/";
-      cardMessage.value = "선한요양보호사교육원 전자명함입니다.\n상담 전화 033-242-9908\n" + shareUrl;
+      var shareText = "선한요양보호사교육원 전자명함입니다.\n" + shareUrl;
 
       function openPopup() {
         popup.classList.remove("hidden");
@@ -943,43 +942,34 @@
               description: "요양보호사 자격증 취득 및 교육 문의",
               imageUrl: "https://sunhancare.vercel.app/image/1.png",
               link: { mobileWebUrl: shareUrl, webUrl: shareUrl }
-            }
+            },
+            buttons: [
+              {
+                title: "홈페이지 바로가기",
+                link: { mobileWebUrl: shareUrl, webUrl: shareUrl }
+              }
+            ]
           });
         } catch (error) {
           window.alert("카카오톡 공유를 열지 못했습니다. 카카오에 등록된 사이트 도메인을 확인해 주세요.");
         }
       });
 
-      function smsAddress(numbers) {
-        var body = encodeURIComponent(cardMessage.value);
-        var isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if (numbers && numbers.length) {
-          var list = numbers.join(",");
-          return isiOS ? "sms:" + list + "&body=" + body : "sms:" + list + "?body=" + body;
-        }
-        return "sms:?body=" + body;
-      }
-
       document.getElementById("sms-share").addEventListener("click", function () {
-        window.location.href = smsAddress();
+        var digits = cardPhone.value.replace(/\D/g, "");
+        if (digits.length < 9) {
+          cardPhone.setCustomValidity("받는 번호를 입력해 주세요.");
+          cardPhone.reportValidity();
+          return;
+        }
+        cardPhone.setCustomValidity("");
+        var body = encodeURIComponent(shareText);
+        var isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        window.location.href = isiOS ? "sms:" + digits + "&body=" + body : "sms:" + digits + "?body=" + body;
       });
-
-      var contactShare = document.getElementById("contact-share");
-      if (navigator.contacts && navigator.contacts.select) {
-        contactShare.classList.remove("hidden");
-        contactShare.classList.add("inline-flex");
-        contactShare.addEventListener("click", function () {
-          navigator.contacts.select(["name", "tel"], { multiple: true }).then(function (people) {
-            var numbers = [];
-            (people || []).forEach(function (person) {
-              (person.tel || []).forEach(function (tel) {
-                if (tel) numbers.push(String(tel));
-              });
-            });
-            if (numbers.length) window.location.href = smsAddress(numbers);
-          }).catch(function () {});
-        });
-      }
+      cardPhone.addEventListener("input", function () {
+        cardPhone.setCustomValidity("");
+      });
 
       document.getElementById("rewrite").addEventListener("click", function () {
         form.reset();
