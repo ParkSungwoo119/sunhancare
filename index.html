@@ -46,6 +46,11 @@
     }
 
     h1, h2, h3 { text-wrap: balance; }
+
+    #top .hero-title {
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+    }
     p { text-wrap: pretty; }
 
     input, select, textarea, button, summary {
@@ -230,32 +235,33 @@
       <div class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--brand)]/10" aria-hidden="true"></div>
       <div class="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-[var(--sand)]" aria-hidden="true"></div>
 
-      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-14 lg:py-24">
-        <div>
-          <h1 class="text-[1.7rem] font-bold leading-[1.35] text-[var(--ink)] sm:text-4xl lg:text-[2.6rem]">춘천 선한요양보호사교육원 - 높은 합격률! 자격증 취득부터 취업 연계까지 한번에</h1>
-          <p class="mt-5 text-xl font-medium leading-relaxed text-[var(--muted)] sm:text-2xl">요양보호사 자격증 · 국비지원(내일배움카드) · 주간·야간·자격소지자반</p>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:gap-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-center lg:gap-20 lg:py-28 xl:gap-24">
+        <div class="flex max-w-2xl flex-col gap-8 self-center lg:max-w-none lg:gap-10">
+          <div class="flex flex-col gap-5">
+            <h1 class="hero-title text-[1.75rem] font-bold text-[var(--ink)] sm:text-4xl lg:text-[2.65rem]">춘천 선한요양보호사교육원 - 높은 합격률! 자격증 취득부터 취업 연계까지 한번에</h1>
+            <p class="text-xl font-medium leading-relaxed text-[var(--muted)] sm:text-2xl">요양보호사 자격증 · 국비지원(내일배움카드) · 주간·야간·자격소지자반</p>
+            <p class="text-lg leading-relaxed text-[var(--muted)]">처음 준비하셔도 괜찮습니다. 반 선택과 내일배움카드부터 차근차근 안내합니다.</p>
+          </div>
 
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="tel:0332429908" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-7 text-lg font-bold text-white shadow-[0_10px_24px_rgba(0,121,107,0.18)] transition-colors hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href="tel:0332429908" class="inline-flex min-h-16 items-center justify-center gap-2.5 rounded-full bg-[var(--brand)] px-8 text-lg font-bold text-white shadow-[0_10px_24px_rgba(0,121,107,0.18)] transition-colors hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.35 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
               수강 문의하기
             </a>
-            <a href="#curriculum" class="inline-flex min-h-14 items-center justify-center rounded-full border-2 border-[var(--brand)] bg-white px-7 text-lg font-bold text-[var(--brand)] transition-colors hover:bg-[var(--brand-mist)]">교육 과정 소개</a>
+            <a href="#curriculum" class="inline-flex min-h-16 items-center justify-center rounded-full border-2 border-[var(--brand)] bg-white px-8 text-lg font-bold text-[var(--brand)] transition-colors hover:bg-[var(--brand-mist)]">교육 과정 소개</a>
           </div>
 
-          <p class="mt-5 text-lg text-[var(--muted)]">처음 준비하셔도 괜찮습니다. 반 선택과 내일배움카드부터 차근차근 안내합니다.</p>
-
-          <ul class="mt-8 flex flex-wrap gap-2.5">
-            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">주간반</a></li>
-            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">야간반</a></li>
-            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">자격면허 소지자반</a></li>
-            <li><a class="inline-flex min-h-11 items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-base font-medium hover:border-[var(--brand)]" href="#continuing-detail">보수교육</a></li>
+          <ul class="flex flex-wrap gap-3">
+            <li><a class="inline-flex min-h-12 items-center rounded-full border border-[var(--line)] bg-white px-5 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">주간반</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full border border-[var(--line)] bg-white px-5 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">야간반</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full border border-[var(--line)] bg-white px-5 py-2 text-base font-medium hover:border-[var(--brand)]" href="#curriculum">자격면허 소지자반</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full border border-[var(--line)] bg-white px-5 py-2 text-base font-medium hover:border-[var(--brand)]" href="#continuing-detail">보수교육</a></li>
           </ul>
         </div>
 
-        <aside class="rounded-[2rem] border border-[var(--line)] bg-white p-6 shadow-[0_20px_50px_rgba(0,121,107,0.08)] sm:p-8">
+        <aside class="self-center rounded-[2rem] border border-[var(--line)] bg-white p-6 shadow-[0_20px_50px_rgba(0,121,107,0.08)] sm:p-8">
           <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--brand-mist)] text-[var(--brand)]" aria-hidden="true">
             <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 10.5 12 3l9 7.5" />
